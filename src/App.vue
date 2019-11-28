@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <AppBar />
-    <v-content>
+    <v-content class="mb-12">
       <router-view />
     </v-content>
     <BottomNavigation />
@@ -16,6 +16,12 @@ export default {
   components: {
     AppBar,
     BottomNavigation
+  },
+  created() {
+    this.$store.dispatch("loadUserAction"); // get user state
+  },
+  updated() {
+    this.$store.dispatch("loadUserAction");
   }
 };
 </script>

@@ -1,18 +1,24 @@
 <template>
-  <v-bottom-navigation v-model="bottomNav" color="primary">
-    <v-btn value="recent">
-      <span>Recent</span>
-      <v-icon>mdi-history</v-icon>
+  <v-bottom-navigation
+    v-model="bottomNav"
+    grow
+    :horizontal="$vuetify.breakpoint.mdAndUp"
+    color="primary"
+    fixed
+  >
+    <v-btn value="recent" to="/dashboard">
+      <span>Dashboard</span>
+      <v-icon>mdi-view-dashboard</v-icon>
     </v-btn>
 
     <v-btn value="favorites">
-      <span>Favorites</span>
-      <v-icon>mdi-heart</v-icon>
+      <span>My Jobs</span>
+      <v-icon>mdi-briefcase</v-icon>
     </v-btn>
 
-    <v-btn value="nearby">
-      <span>Nearby</span>
-      <v-icon>mdi-map-marker</v-icon>
+    <v-btn value="nearby" to="/profile">
+      <span>Profile</span>
+      <v-icon>mdi-account</v-icon>
     </v-btn>
   </v-bottom-navigation>
 </template>

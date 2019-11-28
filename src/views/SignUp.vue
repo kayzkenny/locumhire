@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-card class="mx-auto my-auto" max-width="340">
+      <v-card class="mx-auto" max-width="340">
         <v-card-title class="title font-weight-regular justify-space-between">
           <span>{{ currentTitle }}</span>
           <v-avatar
@@ -20,6 +20,13 @@
         <v-form @submit.prevent="signUp">
           <v-window v-model="step">
             <v-window-item :value="1">
+              <v-img
+                class="px-4"
+                :src="require('../assets/doctor(2).svg')"
+                max-height="400"
+                max-width="600"
+                contain
+              ></v-img>
               <v-card-text>
                 <v-text-field
                   label="Email"
@@ -27,14 +34,21 @@
                   type="email"
                   :rules="[rules.required, rules.email]"
                 ></v-text-field>
-                <span class="caption grey--text text--darken-1"
-                  >This is the email you will use to login to your LocumHire
-                  account</span
-                >
+                <span class="caption grey--text text--darken-1">
+                  This is the email you will use to login to your LocumHire
+                  account
+                </span>
               </v-card-text>
             </v-window-item>
 
             <v-window-item :value="2">
+              <v-img
+                class="px-4"
+                :src="require('../assets/doctor(3).svg')"
+                max-height="400"
+                max-width="600"
+                contain
+              ></v-img>
               <v-card-text>
                 <v-text-field
                   label="Password"

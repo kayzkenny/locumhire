@@ -9,7 +9,7 @@
     <v-row justify="center">
       <v-col cols="10">
         <v-card flat color="transparent" class="display-1 mx-auto"
-          >Your Profile</v-card
+          >Add New Experience</v-card
         >
         <v-form class="mx-auto my-4" @submit.prevent="update">
           <v-container>

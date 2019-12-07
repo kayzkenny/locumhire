@@ -105,10 +105,10 @@
             icon="mdi-briefcase-check"
           >
             <template v-slot:opposite>
-              <span :class="`headline font-weight-bold primary--text`"
-                >{{ xp.start_date.toDate().getFullYear() }} -
-                {{ xp.end_date.toDate().getFullYear() }}</span
-              >
+              <span :class="`headline font-weight-bold primary--text`">
+                {{ xp.start_date.toDate().getFullYear() }} -
+                {{ xp.end_date.toDate().getFullYear() }}
+              </span>
             </template>
             <v-card>
               <v-card-title class="title">{{ xp.job_title }}</v-card-title>
@@ -194,36 +194,19 @@ export default {
     snackbar: false,
     resume: null,
     text: "Profile Updated",
-    exp: [],
     timeout: 2000,
     files: null,
     avatar: null,
-    // dialog: false,
     image: null,
-    dates: ["2019-09-10", "2019-09-20"],
-    clinic_name: null,
-    job_title: null
+    dates: ["2019-09-10", "2019-09-20"]
   }),
   methods: {
     onFilePicked() {
       console.log("File picked");
     },
     deleteExp(id) {
-      // this.dialog = false;
-      // console.log(id);
-      let expRef = db
-        .collection("provider")
-        .doc(this.user.email)
-        .collection("experience")
-        .doc(id);
-      expRef
-        .delete()
-        .then(function() {
-          console.log("Document successfully deleted!");
-        })
-        .catch(function(error) {
-          console.error("Error removing document: ", error);
-        });
+      this.$store.dispatch("deleteXpAction", id);
+      this.$store.dispatch("loadXpAction"); // get latest xp state
     },
     update() {
       this.loading = true;
@@ -377,28 +360,7 @@ export default {
       .catch(error => {
         alert(error);
       });
-    // populate the exp array with firestore user data
-    let exp = this.exp;
-    let expRef = db
-      .collection("provider")
-      .doc(this.user.email)
-      .collection("experience")
-      .orderBy("end_date", "desc");
-    expRef.get().then(function(querySnapshot) {
-      querySnapshot.forEach(function(doc) {
-        // console.log(doc.id, " => ", doc.data());
-        let xp = doc.data();
-        xp.id = doc.id;
-        exp.push(xp);
-        // exp.push(doc.data());
-      });
-    });
-    console.log(exp);
-    // console.log(this.exp);
-  },
-  updated() {
-    console.log("Updated Called");
-    // console.log(this.resume);
+    this.$store.dispatch("loadXpAction"); // get xp state
   },
   computed: {
     user() {
@@ -406,6 +368,9 @@ export default {
     },
     dateRangeText() {
       return this.dates.join(" ~ ");
+    },
+    exp() {
+      return this.$store.state.xp; // get user xp
     }
   }
 };

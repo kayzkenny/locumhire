@@ -44,8 +44,8 @@ export default new Vuex.Store({
           bio.address = snapshot.data().address;
           bio.phone_number = snapshot.data().phone_number;
           bio.zip_code = snapshot.data().zip_code;
-          bio.resume = snapshot.data().resume;
-          bio.avatar = snapshot.data().avatar;
+          // bio.resume = snapshot.data().resume;
+          // bio.avatar = snapshot.data().avatar;
         })
         .catch(error => {
           alert(error);
@@ -66,6 +66,25 @@ export default new Vuex.Store({
         .catch(function(error) {
           console.error("Error removing document: ", error);
         });
+    },
+    updateBio(state, params) {
+      // console.log(params.zip_code);
+      db.collection("provider")
+        .doc(state.user.email)
+        .update({
+          first_name: params.first_name,
+          last_name: params.last_name,
+          address: params.address,
+          phone_number: params.phone_number,
+          zip_code: params.zip_code
+        })
+        .then(() => {
+          // this.loading = false;
+          // this.snackbar = true;
+        })
+        .catch(error => {
+          alert("Error writing document: ", error);
+        });
     }
   },
   actions: {
@@ -83,6 +102,9 @@ export default new Vuex.Store({
     },
     deleteXpAction(context, id) {
       context.commit("deleteXp", id);
+    },
+    updateBioAction(context, params) {
+      context.commit("updateBio", params);
     }
   },
   modules: {}

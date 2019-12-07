@@ -16,26 +16,26 @@
             <v-row>
               <v-col cols="12" lg="3" md="6" sm="6">
                 <v-text-field
-                  v-model="first_name"
+                  v-model="bio.first_name"
                   label="First Name"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" lg="3" md="6" sm="6">
                 <v-text-field
-                  v-model="last_name"
+                  v-model="bio.last_name"
                   label="Last Name"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" lg="3" md="6" sm="6">
                 <v-text-field
-                  v-model="phone_number"
+                  v-model="bio.phone_number"
                   type="number"
                   label="Phone Number"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" lg="3" md="6" sm="6">
                 <v-text-field
-                  v-model="zip_code"
+                  v-model="bio.zip_code"
                   type="number"
                   label="Zip Code"
                 ></v-text-field>
@@ -45,13 +45,24 @@
               <v-col cols="12" lg="12">
                 <v-textarea
                   auto-grow
-                  v-model="address"
+                  v-model="bio.address"
                   label="Address"
                 ></v-textarea>
               </v-col>
             </v-row>
             <v-row justify="center">
-              <v-btn class="mr-4 primary" @click="update" :loading="loading"
+              <v-btn
+                class="mr-4 primary"
+                @click="
+                  update(
+                    bio.first_name,
+                    bio.last_name,
+                    bio.phone_number,
+                    bio.zip_code,
+                    bio.address
+                  )
+                "
+                :loading="loading"
                 >Update</v-btn
               >
             </v-row>
@@ -62,7 +73,7 @@
     <v-row justify="center">
       <v-col cols="3">
         <v-avatar size="192">
-          <img :src="avatar" :alt="first_name" />
+          <img :src="avatar" :alt="bio.first_name" />
         </v-avatar>
       </v-col>
     </v-row>
@@ -183,11 +194,6 @@ export default {
   data: () => ({
     feedback: null,
     success: null,
-    first_name: null,
-    last_name: null,
-    address: null,
-    phone_number: null,
-    zip_code: null,
     loading: false,
     loading2: false,
     loading3: false,
@@ -208,32 +214,16 @@ export default {
       this.$store.dispatch("deleteXpAction", id);
       this.$store.dispatch("loadXpAction"); // get latest xp state
     },
-    update() {
+    update(first_name, last_name, phone_number, zip_code, address) {
       this.loading = true;
-      if (
-        this.first_name &&
-        this.last_name &&
-        this.address &&
-        this.phone_number &&
-        this.zip_code
-      ) {
+      if (first_name && last_name && phone_number && address && zip_code) {
         // update user data with the values provided in the form
-        db.collection("provider")
-          .doc(this.user.email)
-          .update({
-            first_name: this.first_name,
-            last_name: this.last_name,
-            address: this.address,
-            phone_number: this.phone_number,
-            zip_code: this.zip_code
-          })
-          .then(() => {
-            this.loading = false;
-            this.snackbar = true;
-          })
-          .catch(error => {
-            alert("Error writing document: ", error);
-          });
+        let params = { first_name, last_name, phone_number, address, zip_code };
+        // vuex actions allows only one parameter
+        this.$store.dispatch("updateBioAction", params).then(() => {
+          this.loading = false;
+          this.snackbar = true;
+        }); // get xp state
       } else {
         this.feedback = "You must enter all fields";
       }
@@ -349,11 +339,6 @@ export default {
       .doc(this.user.email)
       .get()
       .then(snapshot => {
-        this.first_name = snapshot.data().first_name;
-        this.last_name = snapshot.data().last_name;
-        this.address = snapshot.data().address;
-        this.phone_number = snapshot.data().phone_number;
-        this.zip_code = snapshot.data().zip_code;
         this.resume = snapshot.data().resume;
         this.avatar = snapshot.data().avatar;
       })
@@ -361,6 +346,7 @@ export default {
         alert(error);
       });
     this.$store.dispatch("loadXpAction"); // get xp state
+    this.$store.dispatch("loadBioAction"); // get bio state
   },
   computed: {
     user() {
@@ -371,6 +357,9 @@ export default {
     },
     exp() {
       return this.$store.state.xp; // get user xp
+    },
+    bio() {
+      return this.$store.state.bio; //get user bio
     }
   }
 };

@@ -60,16 +60,16 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col cols="7">
+      <v-col cols="3">
         <v-avatar size="192">
           <img :src="avatar" :alt="first_name" />
         </v-avatar>
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col cols="7">
+      <v-col cols="12" sm="3" md="3" lg="2">
         <v-file-input
-          class="mt-4"
+          class="mt-4 mx-auto"
           accept="image/png, image/jpeg, image/bmp"
           placeholder="Pick an avatar"
           prepend-icon="mdi-camera"
@@ -79,7 +79,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col cols="7">
+      <v-col cols="12" sm="3" md="4" lg="3">
         <v-btn
           tile
           outlined
@@ -99,29 +99,40 @@
         >
         <v-timeline :dense="$vuetify.breakpoint.smAndDown">
           <v-timeline-item
-            v-for="(xp, i) in exp"
-            :key="i"
+            v-for="xp in exp"
+            :key="xp.id"
             color="primary"
             icon="mdi-briefcase-check"
           >
             <template v-slot:opposite>
-              <span :class="`headline font-weight-bold primary--text`">
-                {{ xp.end_date.toDate().getFullYear() }}
-              </span>
+              <span :class="`headline font-weight-bold primary--text`"
+                >{{ xp.start_date.toDate().getFullYear() }} -
+                {{ xp.end_date.toDate().getFullYear() }}</span
+              >
             </template>
-            <v-card dark color="primary">
+            <v-card>
               <v-card-title class="title">{{ xp.job_title }}</v-card-title>
               <v-card-text class="white text--primary">
-                <p class="pt-4">{{ xp.clinic_name }}</p>
-                <v-btn color="primary" class="mx-0" outlined>Update</v-btn>
+                <p class="pt-4">Clinic: {{ xp.clinic_name }},</p>
               </v-card-text>
+              <v-card-actions>
+                <v-btn
+                  text
+                  color="primary"
+                  :to="{ name: 'edit-xp', params: { xp_id: xp.id } }"
+                  >Edit</v-btn
+                >
+                <v-btn text color="primary" @click="deleteExp(xp.id)"
+                  >Delete</v-btn
+                >
+              </v-card-actions>
             </v-card>
           </v-timeline-item>
         </v-timeline>
       </v-col>
     </v-row>
     <v-row justify="center" class="my-4">
-      <v-btn tile outlined color="primary">
+      <v-btn tile outlined color="primary" to="/add-xp">
         <v-icon left>mdi-file-document</v-icon>Add Experience
       </v-btn>
     </v-row>
@@ -187,11 +198,32 @@ export default {
     timeout: 2000,
     files: null,
     avatar: null,
-    image: null
+    // dialog: false,
+    image: null,
+    dates: ["2019-09-10", "2019-09-20"],
+    clinic_name: null,
+    job_title: null
   }),
   methods: {
     onFilePicked() {
       console.log("File picked");
+    },
+    deleteExp(id) {
+      // this.dialog = false;
+      // console.log(id);
+      let expRef = db
+        .collection("provider")
+        .doc(this.user.email)
+        .collection("experience")
+        .doc(id);
+      expRef
+        .delete()
+        .then(function() {
+          console.log("Document successfully deleted!");
+        })
+        .catch(function(error) {
+          console.error("Error removing document: ", error);
+        });
     },
     update() {
       this.loading = true;
@@ -354,9 +386,14 @@ export default {
       .orderBy("end_date", "desc");
     expRef.get().then(function(querySnapshot) {
       querySnapshot.forEach(function(doc) {
-        exp.push(doc.data());
+        // console.log(doc.id, " => ", doc.data());
+        let xp = doc.data();
+        xp.id = doc.id;
+        exp.push(xp);
+        // exp.push(doc.data());
       });
     });
+    console.log(exp);
     // console.log(this.exp);
   },
   updated() {
@@ -366,6 +403,9 @@ export default {
   computed: {
     user() {
       return this.$store.state.user; // get the current user state
+    },
+    dateRangeText() {
+      return this.dates.join(" ~ ");
     }
   }
 };

@@ -4,6 +4,8 @@ import Dashboard from "../views/Dashboard.vue";
 import SignUp from "../views/SignUp.vue";
 import Login from "../views/Login.vue";
 import Profile from "../views/Profile.vue";
+import AddXp from "../views/AddXp.vue";
+import EditXp from "../views/EditXp.vue";
 
 Vue.use(VueRouter);
 
@@ -27,6 +29,16 @@ const routes = [
     path: "/profile",
     name: "profile",
     component: Profile
+  },
+  {
+    path: "/add-xp",
+    name: "add-xp",
+    component: AddXp
+  },
+  {
+    path: "/edit-xp/:xp_id",
+    name: "edit-xp",
+    component: EditXp
   }
 ];
 

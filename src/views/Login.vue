@@ -5,46 +5,49 @@
         <v-alert type="error" v-if="feedback">{{ feedback }}</v-alert>
         <v-alert type="success" v-if="success">{{ success }}</v-alert>
       </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-card class="mx-auto pa-2" max-width="340">
+        <v-card-title class="title font-weight-regular justify-space-between">
+          <span>Login</span>
+        </v-card-title>
+        <v-form @submit.prevent="login">
+          <v-img
+            class="px-4"
+            :src="require('../assets/doctor(1).svg')"
+            max-height="400"
+            max-width="600"
+            contain
+          ></v-img>
+          <v-card-text>
+            <v-text-field
+              v-model="email"
+              label="E-mail"
+              type="email"
+              :rules="[rules.required, rules.email]"
+            ></v-text-field>
 
-      <v-col cols="12" xs="10" sm="8" md="8" lg="4">
-        <v-img
-          :src="require('../assets/doctor(1).svg')"
-          max-height="400"
-          max-width="600"
-          contain
-        ></v-img>
-      </v-col>
-
-      <v-col cols="12" xs="10" sm="8" md="8" lg="4">
-        <v-card flat color="transparent" max-width="340">Login</v-card>
-
-        <v-form class="mx-auto my-4" @submit.prevent="signUp">
-          <v-text-field
-            v-model="email"
-            label="E-mail"
-            type="email"
-            :rules="[rules.required, rules.email]"
-          ></v-text-field>
-
-          <v-text-field
-            v-model="password"
-            label="Password"
-            type="password"
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[rules.required, rules.min]"
-            hint="At least 8 characters"
-            counter
-            @click:append="show1 = !show1"
-          ></v-text-field>
+            <v-text-field
+              v-model="password"
+              label="Password"
+              type="password"
+              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.min]"
+              hint="At least 8 characters"
+              counter
+              @click:append="show1 = !show1"
+            ></v-text-field>
+          </v-card-text>
         </v-form>
-        <v-row justify-self>
-          <v-btn color="primary ml-3" @click="login" :loading="loading"
+
+        <v-card-actions>
+          <v-btn small color="primary" @click="login" :loading="loading"
             >Login</v-btn
           >
           <v-spacer></v-spacer>
-          <p color="cyan lighten-2" class="body-1">Forgot password</p>
-        </v-row>
-      </v-col>
+          <v-btn small text class="body-2">Forgot password</v-btn>
+        </v-card-actions>
+      </v-card>
     </v-row>
   </v-container>
 </template>

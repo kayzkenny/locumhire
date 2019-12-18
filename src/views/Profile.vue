@@ -13,7 +13,7 @@
 
         <v-form class="mx-auto my-4" @submit.prevent="update">
           <v-container>
-            <v-row>
+            <v-row dense>
               <v-col cols="12" lg="3" md="6" sm="6">
                 <v-text-field
                   v-model="bio.first_name"
@@ -40,8 +40,14 @@
                   label="Zip Code"
                 ></v-text-field>
               </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-model="bio.headline"
+                  label="Headline"
+                ></v-text-field>
+              </v-col>
             </v-row>
-            <v-row justify="center">
+            <v-row justify="center" dense>
               <v-col cols="12" lg="12">
                 <v-textarea
                   auto-grow
@@ -50,7 +56,7 @@
                 ></v-textarea>
               </v-col>
             </v-row>
-            <v-row justify="center">
+            <v-row justify="center" dense>
               <v-btn
                 class="mr-4 primary"
                 @click="
@@ -59,7 +65,8 @@
                     bio.last_name,
                     bio.phone_number,
                     bio.zip_code,
-                    bio.address
+                    bio.address,
+                    bio.headline
                   )
                 "
                 :loading="loading"
@@ -70,15 +77,32 @@
         </v-form>
       </v-col>
     </v-row>
-    <v-row justify="center">
-      <v-col cols="3">
-        <v-avatar size="192">
-          <img :src="avatar" :alt="bio.first_name" />
-        </v-avatar>
+    <v-row justify="center" dense>
+      <v-col cols="10">
+        <v-row justify="center" dense>
+          <v-col cols="6">
+            <v-avatar size="108" tile class="mx-auto">
+              <img :src="avatar" :alt="bio.first_name" />
+            </v-avatar>
+          </v-col>
+
+          <v-col cols="8">
+            <v-btn
+              tile
+              outlined
+              color="primary"
+              @click="uploadAvatar"
+              @change="onFilePicked"
+              :loading="loading3"
+            >
+              <v-icon left>mdi-cloud-upload</v-icon>Upload Avatar
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
-    <v-row justify="center">
-      <v-col cols="12" sm="3" md="3" lg="2">
+    <v-row justify="center" dense>
+      <v-col cols="10">
         <v-file-input
           class="mt-4 mx-auto"
           accept="image/png, image/jpeg, image/bmp"
@@ -89,21 +113,7 @@
         ></v-file-input>
       </v-col>
     </v-row>
-    <v-row justify="center">
-      <v-col cols="12" sm="3" md="4" lg="3">
-        <v-btn
-          tile
-          outlined
-          color="primary"
-          @click="uploadAvatar"
-          @change="onFilePicked"
-          :loading="loading3"
-        >
-          <v-icon left>mdi-cloud-upload</v-icon>Upload Avatar
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row justify="center">
+    <v-row justify="center" dense>
       <v-col cols="10">
         <v-card flat color="transparent" class="display-1 mx-auto"
           >Experience</v-card
@@ -142,12 +152,12 @@
         </v-timeline>
       </v-col>
     </v-row>
-    <v-row justify="center" class="my-4">
+    <v-row justify="center" class="my-4" dense>
       <v-btn tile outlined color="primary" to="/add-xp">
         <v-icon left>mdi-file-document</v-icon>Add Experience
       </v-btn>
     </v-row>
-    <v-row justify="center" class="my-4">
+    <v-row justify="center" class="my-4" dense>
       <v-btn
         tile
         outlined
@@ -159,7 +169,7 @@
         <v-icon left>mdi-cloud-download</v-icon>Download Resume
       </v-btn>
     </v-row>
-    <v-row justify="center">
+    <v-row justify="center" dense>
       <v-col cols="6">
         <v-file-input
           multiple
@@ -168,7 +178,7 @@
         ></v-file-input>
       </v-col>
     </v-row>
-    <v-row justify="center" class="my-4">
+    <v-row justify="center" class="my-4" dense>
       <v-btn
         tile
         outlined
@@ -214,13 +224,27 @@ export default {
       this.$store.dispatch("deleteXpAction", id);
       this.$store.dispatch("loadXpAction"); // get latest xp state
     },
-    update(first_name, last_name, phone_number, zip_code, address) {
+    update(first_name, last_name, phone_number, zip_code, address, headline) {
       this.loading = true;
-      if (first_name && last_name && phone_number && address && zip_code) {
+      if (
+        first_name &&
+        last_name &&
+        phone_number &&
+        address &&
+        zip_code &&
+        headline
+      ) {
         // update user data with the values provided in the form
-        let params = { first_name, last_name, phone_number, address, zip_code };
+        let payload = {
+          first_name,
+          last_name,
+          phone_number,
+          address,
+          zip_code,
+          headline
+        };
         // vuex actions allows only one parameter
-        this.$store.dispatch("updateBioAction", params).then(() => {
+        this.$store.dispatch("updateBioAction", payload).then(() => {
           this.loading = false;
           this.snackbar = true;
         }); // get xp state
@@ -345,8 +369,8 @@ export default {
       .catch(error => {
         alert(error);
       });
-    this.$store.dispatch("loadXpAction"); // get xp state
     this.$store.dispatch("loadBioAction"); // get bio state
+    this.$store.dispatch("loadXpAction"); // get xp state
   },
   computed: {
     user() {

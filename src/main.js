@@ -3,11 +3,12 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
+import lineClamp from "vue-line-clamp";
 import { fb } from "./db";
 require("firebase/firestore");
-// require("firebase/auth");
 
 Vue.config.productionTip = false;
+Vue.use(lineClamp, {});
 
 let app = null; // waiting for firebase auth to initialize before creating a vue instance
 

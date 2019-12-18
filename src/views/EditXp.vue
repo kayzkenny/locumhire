@@ -132,9 +132,6 @@ export default {
       .catch(error => {
         alert(error);
       });
-  },
-  mounted() {
-    console.log(this.clinic_name);
   }
 };
 </script>

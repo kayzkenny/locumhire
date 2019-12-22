@@ -84,8 +84,10 @@ export default {
   name: "Dashboard",
   data: () => ({}),
   created() {
-    this.$store.dispatch("loadBioAction"); // get bio state
-    this.$store.dispatch("loadVacanciesAction"); // get xp state
+    if (this.user) {
+      this.$store.dispatch("loadBioAction"); // get bio state
+    }
+    this.$store.dispatch("loadVacanciesAction"); // get vacancies state
   },
   computed: {
     user() {
